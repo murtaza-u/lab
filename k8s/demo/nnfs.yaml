@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  nnfs-deployment
+  namespace: default
+  labels:
+    app:  nnfs-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nnfs
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app:  nnfs
+    spec:
+      containers:
+      - name:  nnfs
+        image:  murtazau/nnfs:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: nnfs-config
+              key: port
+
+        - name: BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: nnfs-config
+              key: base-url
+
+        - name: DB_FILE
+          valueFrom:
+            secretKeyRef:
+              name: nnfs-secret
+              key: db-file
+        ports:
+        - containerPort:  3000
+          name:  nnfs
+      restartPolicy: Always
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nnfs-service
+  namespace: default
+spec:
+  selector:
+    app: nnfs
+  type: NodePort
+  ports:
+  - name: nnfs-service
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+    nodePort: 30001
+---
