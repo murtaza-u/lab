@@ -64,11 +64,6 @@
 * Life cycle of pod and service not connected
 * Internal and External service
 
-## Ingress
-
-* When an application is exposed to the outside world, the request first
-  goes to the ingress and then to the external service.
-
 ## ConfigMap
 
 * For storing non-confidential data only
@@ -161,3 +156,53 @@
 * A virtual cluster within the K8s cluster
 * `kubectl get namespace`
 * `kubectl create namespace newnamespace`
+* Used to groups logically related components
+* Can't access most resources from another namespace
+* Can share `service`
+
+```yaml
+db_url: mysql-service.database
+```
+
+* Some components like volumes live globally in a cluster and cannot be
+  isolated into namespaces.
+
+`kubectl api-resources --namespaced=false`
+
+* Example,
+
+```yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: configmap
+  # namespace: default
+  namespace: my-namespace
+data:
+  key: value
+```
+
+## Changing active namespace - `kubens`
+
+* `kubens` is a 3rd party tool which allows you to change your default
+namespace, eliminating the need of typing `-n mynamespace` every time.
+* Part of `kubectx` package
+
+## Ingress
+
+* When an application is exposed to the outside world, the request first
+  goes to the ingress and then to the internal service.
+* `minikube addons enable ingress`
+* `kubectl get pods -n ingress-nginx`
+* `kubectl create secret tls example-com-tls --cert=tls.crt --key=tls.key`
+* `curl --cacert tls.crt https://example.com`
+
+## Creating a self-signed certificate
+
+```bash
+openssl req -x509 \
+    -newkey rsa:4096 -sha256 -nodes \
+    -keyout tls.key -out tls.crt \
+    -subj "/CN=example.com" \
+    -days 365
+```
