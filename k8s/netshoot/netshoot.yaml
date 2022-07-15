@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netshoot
+  namespace: default
+  labels:
+    app: netshoot
+spec:
+  selector:
+    matchLabels:
+      app: netshoot
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: netshoot
+    spec:
+      containers:
+      - name: netshoot
+        image: nicolaka/netshoot:latest
+        command: ["/bin/bash"]
+        args: ["-c", "while true; do ping localhost; sleep 60; done"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: netshoot
+      restartPolicy: Always
+---
+
+# $ kubectl get pods -o wide
+# NAME                        READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+# netshoot-6fdf465749-5dj6r   1/1     Running   0          18s   172.17.0.4   minikube   <none>           <none>
+# netshoot-6fdf465749-sv7ff   1/1     Running   0          19s   172.17.0.5   minikube   <none>           <none>
+#
+# $ kubectl exec -it netshoot-6fdf465749-5dj6r -- /bin/bash
+# bash# ping 172.17.0.5
+# 64 bytes from 172.17.0.5: icmp_seq=1 ttl=114 time=11.9 ms
+# 64 bytes from 172.17.0.5: icmp_seq=2 ttl=114 time=12.8 ms

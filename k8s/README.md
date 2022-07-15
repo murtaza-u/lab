@@ -1,5 +1,15 @@
 # Kubernetes
 
+## What makes containerisation possible?
+
+* Linux namespaces
+* Linux Control Groups(cgroups)
+
+## Scaling
+
+* Horizontal scaling(scaling out)
+* Vertical scaling(scaling up)
+
 ## What is K8s?
 
 * Container Orchestration tool
@@ -26,18 +36,43 @@
 * One or more master nodes/control plane
 * Many worker nodes
 
+## Master Node / Control Plane
+
+### API Server
+* Entry point to K8s cluster
+* You and other components of control plane interact with `etcd` via API
+  Server
+
+### Controller Manager
+
+* Performs cluster-level functions like replicating pods, keeping track
+  of worker nodes, handling node failures, and so on.
+
+### Scheduler - decides and ensures pods placement
+
+* Schedules pods
+* Assigns a worker node to each deployable component of your application
+
+### `etcd` - Kubernetes backing store(key value store)
+
+* Reliable, distributed, key-value pair data store
+
 ## Work Node
 
-* Container runtime
-* Kubelet - Process which allows nodes to communicate with each other
-* Kube Proxy
+### Container runtime
 
-## Master Node
+* Docker
+* rkt
 
-* API Server - entry point to K8s cluster
-* Controller Manager - keeps track of whats happening in the cluster
-* Scheduler - decides and ensures pods placement
-* `etcd` - Kubernetes backing store(key value store)
+### Kubelet
+
+* Process which allows nodes to communicate with each other
+* Talks to the API server
+* Manages containers on its node
+
+### Kube Proxy
+
+* Load-balances network traffic
 
 ## Virtual Network
 
@@ -53,7 +88,8 @@
 * Abstraction over container
 * Usually contain only one container
 * Each pod gets its own IP Address
-* Pods can communicate with one another using that IP Address
+* Pods can communicate with one another using that IP Address regardless
+  of the node they are on.
 * Pods are ephemeral
 * When a pod dies, it may be possible that the new pod is assigned a new
   IP address and hence the `service` component comes into picture.
@@ -144,12 +180,24 @@
 * `kubectl create` (rarely used)
 * `kubectl get [nodes|pods|configmap|secret|replicasets]`
 * `kubectl logs`
+* `kubectl logs --previous`
 * `kubectl describe [source] [resource]`
 * `-o wide`
 * `kubectl edit`
 * `kubectl exec -it nginx-depl-5ddc44dd46-8p668 -- /bin/bash`
 * `kubectl delete deployments.apps nginx-depl`
 * `kubectl delete -f filename.yaml`
+* `kubectl expose`
+* `kubectl get pod -l release=staging`
+* `kubectl get pod -l release!='production'`
+* `kubectl get pod -l '!release'`
+* `kubectl get pod -l app=kubia,release=staging`
+* `kubectl annotate pod kubia anon="foo bar"`
+* `kubectl get pod kubia -o json | jq '.metadata.annotations'`
+
+## Port Forwarding
+
+* `kubectl port-forward kubia 8080:8000`
 
 ## Namespaces
 
@@ -206,3 +254,137 @@ openssl req -x509 \
     -subj "/CN=example.com" \
     -days 365
 ```
+
+## Point your shell to `minikube's` docker-daemon
+
+```bash
+eval $(minikube -p minikube docker-env)
+```
+
+## Better way to load local image into Minikube
+
+```bash
+minikube image load local-image
+```
+
+## Liveness Probe
+
+* Hey Pod are you still alive?
+* Properties:
+
+```yaml
+initialDelaySeconds: 5 # default 0s (inital delay before probing starts)
+timeoutSeconds: 5      # default 1s (if the response time exceeds 5, kill)
+periodSeconds: 10      # default 10s (time period between each probe)
+failureThreshold: 3    # default 3 (no. of failures before killing)
+successThreshold: 1    # default 1
+```
+
+> Set `initialDelaySeconds` to account for your app's startup time
+
+* 3 types:
+
+### HTTP GET
+
+* 2XX or 3XX response = Alive
+
+```yaml
+livenessProbe:
+  httpGet:
+    path: /
+    port: 8000
+```
+
+### TCP Socket
+
+* If connection is established = Alive
+
+### Exec
+
+* Executes an arbitrary command
+* Exit status code is 0 = Alive
+
+## Why create deployment instead of creating pods directly?
+
+* If pods are created manually, they are not managed by the control
+  plane components but solely by kubelet.
+* If a node dies, kubelet running on that node dies as well.
+* Hence kubernetes has no way of rescheduling the pod and is lost
+  forever.
+
+## `matchExpressions` selector
+
+* More powerful than `matchLabels`.
+* Should contain - key, operator, list of values(optional - depends on
+  operator).
+* Can specify multiple expressions. All must be true in order to match.
+
+### Operators
+
+* `In` - labels must match one of the specified values
+* `NotIn` - labels must **not** match any of the specified values
+* `Exists` - pod must include label with the specified key(do not
+  specify value)
+* `DoesNotExist` - pod must **not** include label with the specified
+  key(do not specify value)
+
+## Unlabel a pod
+
+* Put a dash at the end of a label to remove it
+
+```bash
+kubectl label pods nginx-566b564c99-v7rjs authorized_by-
+```
+
+## DaemonSet
+
+* Used to run a pod on every node or a subset of nodes.
+* Usually runs system services
+* By default runs the pod on each and every node unless explicitly
+  specified
+* Pods aren't scattered around unlike a ReplicaSet or a
+  ReplicationController.
+* If a node goes down, the DaemonSet doesn't cause a pod to be created
+  elsewhere. But when a new node joins the cluster, DaemonSet deploys a
+  new pod instance on it.
+* Some node can be made `unschedulable` preventing pods from being
+  deployed to them. A DaemonSet will deploy pods even on such nodes,
+  because the `unschedulable` attribute is only used by the scheduler.
+
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ssd-monitor
+  namespace: default
+  labels:
+    app: ssd-monitor
+spec:
+  selector:
+    matchLabels:
+      app: ssd-monitor
+  template:
+    metadata:
+      labels:
+        app: ssd-monitor
+    spec:
+      nodeSelector:
+        disk: ssd
+      containers:
+      - name: ssd-monitor
+        image: ssd-monitor:latest
+        imagePullPolicy: IfNotPresent
+---
+```
+
+## Job
+
+* Running pod that performs a single completable task and terminates
+  afterwards.
+* Pods can run sequentially or in parallel.
+
+## Cron Job
+
+* Like UNIX cron jobs, but managed by Kubernetes
+* When the time is right, Cron Job object creates a Job resource which
+  deploys a pod instance as specified in the pod template.

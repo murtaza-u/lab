@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: default
+  labels: # deployment label
+    app: nginx
+spec:
+  selector: # selecting pod
+    # matchLabels:
+    #   app: nginx
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - nginx
+      - key: rel
+        operator: NotIn
+        values:
+          - production
+          - pre-production
+      - key: authorized_by
+        operator: Exists
+  replicas: 2
+  template:
+    metadata:
+      labels: # pod label
+        app: nginx
+        authorized_by: murtaza
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: nginx # port name
+      restartPolicy: Always
+---
