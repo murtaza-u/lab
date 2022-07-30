@@ -230,11 +230,17 @@ data:
   key: value
 ```
 
-## Changing active namespace - `kubens`
+## Changing active namespace - `kubens` (don't use)
 
 * `kubens` is a 3rd party tool which allows you to change your default
 namespace, eliminating the need of typing `-n mynamespace` every time.
 * Part of `kubectx` package
+* Instead use,
+
+```bash
+kubectl config set-context --current --namespace=<NS>
+kubectl config view | grep namespace
+```
 
 ## Ingress
 
