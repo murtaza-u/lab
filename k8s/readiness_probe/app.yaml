@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readiness
+  namespace: default
+  labels:
+    app: readiness
+spec:
+  selector:
+    matchLabels:
+      app: readiness
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: readiness
+    spec:
+      containers:
+      - name: readines
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        args:
+          - /bin/sh
+          - -c
+          - sleep infinity
+        readinessProbe:
+          exec:
+            command:
+            - ls
+            - /var/ready
+          initialDelaySeconds: 0 # inital delay before probing starts
+          timeoutSeconds: 1      # if the response time exceeds 5, kill
+          periodSeconds: 10      # time period between each probe
+          failureThreshold: 3    # no. of failures before killing
+          successThreshold: 1
+        ports:
+        - containerPort: 5000
+      restartPolicy: Always
+---

@@ -17,8 +17,8 @@
 
 ## Why K8s?
 
-* Trend from monolith to micro services gave rise to increased use
-  containerisation technology.
+* Trend from monolith to micro services gave rise to increase in usage
+  of containerisation technology.
 * This resulted in application that now comprise of 100s or 1000s of
   running containers.
 * Making managing application through self-made scripts and tools
@@ -310,6 +310,28 @@ livenessProbe:
 * Executes an arbitrary command
 * Exit status code is 0 = Alive
 
+## Readiness Probe
+
+* YAML manifest is exactly same as liveness probe.
+* Only ready pods are included in the Endpoints resource.
+* Readiness probe only governs the pod's ready state and not it's
+  termination.
+* Since unready pods are not part of the Endpoints resource, traffic is
+  not directed to those pods.
+
+```yaml
+readinessProbe:
+  exec:
+    command:
+    - ls
+    - /var/ready
+  initialDelaySeconds: 0 # inital delay before probing starts
+  timeoutSeconds: 1      # if the response time exceeds 5, kill
+  periodSeconds: 10      # time period between each probe
+  failureThreshold: 3    # no. of failures before killing
+  successThreshold: 1
+```
+
 ## Why create deployment instead of creating pods directly?
 
 * If pods are created manually, they are not managed by the control
@@ -394,3 +416,55 @@ spec:
 * Like UNIX cron jobs, but managed by Kubernetes
 * When the time is right, Cron Job object creates a Job resource which
   deploys a pod instance as specified in the pod template.
+
+## Node Selector
+
+* Schedule pod(s) to a particular node(s)
+
+`kubectl label node mynode gpu=true`
+
+```yaml
+kind: Deployment
+spec:
+  template:
+    spec:
+      nodeSelector:
+        gpu: true
+```
+
+## External Traffic Policy
+
+```yaml
+kind: Service
+spec:
+  externalTrafficPolicy: Local # or `Cluster` (default)
+  type: NodePort # only `NodePort` and `LoadBalancer` allowed
+```
+
+* `Local` preserves client's IP by eliminating an unneeded network hop,
+  which in turn prevents SNAT. However, this comes at a cost of possible
+  imbalanced traffic distribution. Also the load balancer’s health
+  checking capabilities needs to be configured to only send traffic to
+  nodes where the corresponding `NodePort` is responsive.
+
+<https://www.asykim.com/blog/deep-dive-into-kubernetes-external-traffic-policies>
+
+## Headless Service
+
+* A headless service is a `ClusterIP` service with no Cluster IP
+* Pods are able to access the pods backing headless service using its
+  FQDN
+
+```yaml
+kind: Service
+spec:
+  clusterIP: None
+  selector:
+    app: headless
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: http
+---
+```

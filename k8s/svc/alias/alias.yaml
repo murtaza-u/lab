@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: alias
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: api.mycompany.com
+---

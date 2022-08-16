@@ -1,43 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hostname
+  name: lb
   namespace: default
   labels:
-    app: hostname
+    app: lb
 spec:
   selector:
     matchLabels:
-      app: hostname
-  replicas: 1
+      app: lb
+  replicas: 3
   template:
     metadata:
       labels:
-        app: hostname
+        app: lb
     spec:
       containers:
-      - name: hostname
-        image: murtazau/hostname:latest
+      - name: lb
+        image: nginx:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8000
-          name: hostname
+        - containerPort: 80
+          name: http
       restartPolicy: Always
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: hostname
+  name: lb
   namespace: default
 spec:
   selector:
-    app: hostname
-  type: NodePort
+    app: lb
+  type: LoadBalancer
   ports:
-  - name: hostname
+  - name: lb
     protocol: TCP
     port: 80
-    targetPort: 8000
+    targetPort: http
     nodePort: 30001
 ---
