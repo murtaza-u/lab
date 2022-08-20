@@ -118,12 +118,6 @@
     * CLIENT_ID
     * CLIENT_SECRET
 
-## Volumes
-
-* Used for persisting Databases
-* K8s doesn't manage persistence for you
-* Consider volume as an external hard drive plugged into your computer
-
 ## Deployment
 
 * Stateless
@@ -312,7 +306,7 @@ livenessProbe:
 
 ## Readiness Probe
 
-* YAML manifest is exactly same as liveness probe.
+* YAML manifest is exactly same as that of liveness probe.
 * Only ready pods are included in the Endpoints resource.
 * Readiness probe only governs the pod's ready state and not it's
   termination.
@@ -468,3 +462,45 @@ spec:
     targetPort: http
 ---
 ```
+
+## Volumes
+
+### Type of volumes:
+
+Non-persistent
+
+* `emptyDir`
+* `gitRepo` (deprecated)
+
+Persistent
+
+* `hostPath`
+* `nfs` (network file system)
+* Google Compute Engine Persistent Disk (GCE PD)
+* AWS Elastic Block Store(AWS EBS)
+* Azure Disk
+
+Special
+
+* `configMap`
+* `secret`
+* `downwardAPI`
+
+Refer [example manifests](./volumes) for Persistent Volumes, Persistent
+Volume Claims & Storage Classes (Dynamic Provisioning).
+
+### Access Modes
+
+* ReadWriteOnce    (RWO)
+* ReadOnlyMany     (ROX)
+* ReadWriteMany    (RWX)
+* ReadWriteOncePod (RWOP)
+
+First three are w.r.t nodes.
+
+### Persistent Volume Claims
+
+* Not specifying a `storageClassName` defaults to the `default` storage class
+* Setting `storageClassName` to "", makes use of an independently
+  deployed persistent volume instead of provisioning a new `PV`.
+* Namespaced, unlike Persistent Volumes and Storage Classes.

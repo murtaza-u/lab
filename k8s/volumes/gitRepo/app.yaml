@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: default
+  labels:
+    app: web
+spec:
+  selector:
+    matchLabels:
+      app: web
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: nginx:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      initContainers:
+      - name: clone
+        image: bitnami/git
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - git clone https://github.com/murtaza-u/k8s-vol-git-repo /repo
+        volumeMounts:
+        - name: html
+          mountPath: /repo
+      volumes:
+        - name: html
+          gitRepo:
+            repository: https://github.com/murtaza-u/k8s-vol-git-repo
+            revision: main
+            directory: .
+          # emptyDir: {}
+      restartPolicy: Always
+---

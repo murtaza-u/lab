@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+spec:
+  capacity:
+    storage: 100Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce     # RWO
+    - ReadOnlyMany      # ROX
+  persistentVolumeReclaimPolicy: Retain
+  # ideally nfs or cloud storage should be used instead
+  hostPath:
+    path: /data/db

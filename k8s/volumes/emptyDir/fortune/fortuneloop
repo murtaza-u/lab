@@ -1,0 +1,8 @@
+#!/bin/sh
+
+mkdir /var/htdocs -p
+
+while true; do
+    /usr/games/fortune > /var/htdocs/index.html
+    sleep 5
+done

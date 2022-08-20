@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+  namespace: default
+  labels:
+    app: mongo-pvc
+spec:
+  storageClassName: mini
+  accessModes:
+  - ReadWriteOnce
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 100Mi
+---

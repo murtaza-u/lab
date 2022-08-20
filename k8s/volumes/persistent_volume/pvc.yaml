@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+  namespace: default
+  labels:
+    app: mongo-pvc
+spec:
+  # setting `storageClassName` to "", makes use of an independently deployed
+  # persistent volume instead of provisioning a new `PV`
+  storageClassName: ""
+  accessModes:
+  - ReadWriteOnce
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 90Mi
+---
