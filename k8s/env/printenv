@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "1: $FIRST_VAR"
+echo "2: $SECOND_VAR"
+sleep infinity

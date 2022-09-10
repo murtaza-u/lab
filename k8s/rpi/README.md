@@ -98,7 +98,7 @@ EOF
 
 ```bash
 sudo mkdir /etc/containerd -p
-containerd config default | sudo tee /etc/containerd/config.toml
+containerd config default | sudo tee /etc/containerd/config.toml >/dev/null
 ```
 
 * To use the systemd cgroup driver in `/etc/containerd/config.toml` with
@@ -125,7 +125,7 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
   ignore the minimum memory error,
 
 ```bash
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors Mem
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=Mem
 ```
 
 * Get Kube Config
@@ -174,4 +174,8 @@ kube-system    kube-scheduler-control-plane            1/1     Running   3 (94m 
 sudo kubeadm join 192.168.0.100:6443 \
     --token XXXXXX.XXXXXXXXXXXXXXXX \
     --discovery-token-ca-cert-hash sha256:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+```bash
+kubeadm token create --print-join-command
 ```

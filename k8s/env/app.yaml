@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: env
+  namespace: default
+  labels:
+    app: env
+spec:
+  selector:
+    matchLabels:
+      app: env
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: env
+    spec:
+      containers:
+      - name: env
+        image: printenv:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FIRST_VAR
+          value: "foo"
+        - name: SECOND_VAR
+          value: "$(FIRST_VAR)bar"
+      restartPolicy: Always
+---

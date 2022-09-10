@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  storageClassName: managed-nfs
+  accessModes:
+  - ReadWriteOnce
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 5Mi
+---

@@ -100,24 +100,6 @@
 * Life cycle of pod and service not connected
 * Internal and External service
 
-## ConfigMap
-
-* For storing non-confidential data only
-* Example,
-    * `ENV` variables
-    * Configuration Parameters
-
-## Secrets
-
-* For storing confidential/secret data,
-* Secrets are stored in `base64` encoding
-* Meant to be encrypted by 3rd party tools
-* Example,
-    * Username
-    * Password
-    * CLIENT_ID
-    * CLIENT_SECRET
-
 ## Deployment
 
 * Stateless
@@ -504,3 +486,121 @@ First three are w.r.t nodes.
 * Setting `storageClassName` to "", makes use of an independently
   deployed persistent volume instead of provisioning a new `PV`.
 * Namespaced, unlike Persistent Volumes and Storage Classes.
+
+## `command` and `args`
+
+| Docker      | Kubernetes | Description                                     |
+|-------------|------------|-------------------------------------------------|
+| ENTRYPOINT  | command    | Executable that's executed inside the container |
+| CMD         | args       | Arguments passed to the executable              |
+
+```yaml
+spec:
+  template:
+    spec:
+      containers:
+      - name: mycontainer
+        image: myimage:tag
+        command: ["/usr/bin/mybin"] # overwrited ENTRYPOINT
+        args:                       # overwrited CMD
+          - foo
+          - bar
+          - "2"
+```
+
+## Referring to other environment variables in a variable's value
+
+```yaml
+env:
+- name: FIRST_VAR
+  value: "foo"
+- name: SECOND_VAR
+  value: "$(FIRST_VAR)bar"
+```
+
+## ConfigMap
+
+* For storing non-confidential data only
+* Example,
+    * `ENV` variables
+    * Configuration Parameters
+
+```text
+.
+├── bar.csv
+├── bar.json
+└── foo
+    ├── foo1
+    └── foo2
+
+1 directory, 4 files
+```
+
+```bash
+kubectl create configmap my-config-map \
+    --from-literal some=thing \
+    --from-file bar.json \
+    --from-file csv=bar.csv \
+    --from-file foo/
+```
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+data:
+  bar.json: |
+    {
+        "name": "Mark",
+        "age": 20
+    }
+  csv: |
+    uid,dept,employee
+    1,accounts,Harry
+    2,finance,Leo
+  foo1: |
+    bar1
+  foo2: |
+    bar2
+  some: thing
+```
+
+## Passing config map entries as environment variables
+
+Refer this [example](./volumes/configmap/read_as_env_vars)
+
+## Mounting ConfigMap inside the container
+
+```yaml
+  volumeMounts:
+  - name: config
+    mountPath: /etc/nginx/conf.d
+volumes:
+  - name: config
+    configMap:
+      name: myconfig
+      # if items are not specified, all keys inside the configMap become
+      # a part of volume
+      items:
+        - key: mynginx.conf
+          path: mycustomnginx.conf
+```
+
+### `volumeMounts.mountPath`
+
+* Path within the container at which the volume should be mounted.
+
+### `volumeMounts.subPath`
+
+* Path within the volume from which the container's volume should be
+  mounted. Defaults to "" (volume's root).
+
+## Secrets
+
+* For storing confidential/secret data,
+* Secrets are stored in `base64` encoding
+* Meant to be encrypted by 3rd party tools
+* Example,
+    * Username
+    * Password
+    * CLIENT_ID
+    * CLIENT_SECRET
