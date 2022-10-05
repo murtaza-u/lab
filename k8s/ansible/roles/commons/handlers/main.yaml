@@ -1,0 +1,4 @@
+- name: purge-dphys-swapfile
+  apt:
+    name: dphys-swapfile
+    state: absent

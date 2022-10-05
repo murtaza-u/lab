@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nfs-client-provisioner
+  name: nfs-provisioner
   labels:
-    app: nfs-client-provisioner
+    app: nfs-provisioner
   # replace with namespace where provisioner is deployed
   namespace: default
 spec:
@@ -12,15 +12,15 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: nfs-client-provisioner
+      app: nfs-provisioner
   template:
     metadata:
       labels:
-        app: nfs-client-provisioner
+        app: nfs-provisioner
     spec:
-      serviceAccountName: nfs-client-provisioner
+      serviceAccountName: nfs-provisioner
       containers:
-        - name: nfs-client-provisioner
+        - name: nfs-provisioner
           image: k8s.gcr.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
           volumeMounts:
             - name: nfs-client-root
@@ -29,11 +29,11 @@ spec:
             - name: PROVISIONER_NAME
               value: k8s-sigs.io/nfs-subdir-external-provisioner
             - name: NFS_SERVER
-              value: 192.168.0.102
+              value: 192.168.0.100
             - name: NFS_PATH
               value: /srv/nfs
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 192.168.0.102
+            server: 192.168.0.100
             path: /srv/nfs

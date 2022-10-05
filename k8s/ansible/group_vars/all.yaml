@@ -1,0 +1,9 @@
+kubernetes:
+  version: 1.24.6-00
+
+containerd:
+  containerd_amd64_url: https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
+  containerd_arm64_url: https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-arm64.tar.gz
+  runc_amd64_url: https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+  runc_arm64_url: https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.arm64
+  containerd_service_url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service

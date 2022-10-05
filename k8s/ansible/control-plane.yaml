@@ -1,0 +1,10 @@
+# *not* idempotent
+
+- hosts: control
+  become: true
+  tasks:
+    - name: kubeadm init
+      command: kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=Mem
+
+    - name: install flannel
+      command: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reload
+  namespace: default
+  labels:
+    app: reload
+spec:
+  selector:
+    matchLabels:
+      app: reload
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reload
+    spec:
+      containers:
+      - name: reload
+        image: reload:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - name: env
+          mountPath: /env
+      volumes:
+        - name: env
+          configMap:
+            name: envconf
+      restartPolicy: Always
+---

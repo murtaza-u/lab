@@ -1,0 +1,5 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: reset nodes
+      command: kubeadm reset -f
