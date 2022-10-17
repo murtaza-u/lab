@@ -21,7 +21,7 @@
     remote_src: true
     dest: /tmp/containerd
     mode: 0755
-  when: ansible_architecture == "amd64"
+  when: ansible_architecture == "x86_64"
 
 - name: moving containerd binaries to /usr/local/bin
   copy:
@@ -49,7 +49,7 @@
     url: "{{ containerd.runc_amd64_url }}"
     dest: /usr/local/bin/runc
     mode: 0751
-  when: ansible_architecture == "amd64"
+  when: ansible_architecture == "x86_64"
 
 - name: copy containerd config
   copy:
