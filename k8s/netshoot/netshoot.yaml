@@ -7,8 +7,14 @@ metadata:
     app: netshoot
 spec:
   selector:
-    matchLabels:
-      app: netshoot
+    # matchLabels:
+    #   app: netshoot
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - netshoot
+          - net
   replicas: 2
   template:
     metadata:

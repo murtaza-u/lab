@@ -1,6 +1,10 @@
 [control]
-c
+i51
+i52
+i53
 
 [worker]
-w1
-w2
+i54
+pi1
+pi2
+pi3

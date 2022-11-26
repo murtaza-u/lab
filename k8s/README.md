@@ -39,6 +39,7 @@
 ## Master Node / Control Plane
 
 ### API Server
+
 * Entry point to K8s cluster
 * You and other components of control plane interact with `etcd` via API
   Server
@@ -98,7 +99,7 @@
 
 * Permanent IP address
 * Life cycle of pod and service not connected
-* Internal and External service
+* Types: `ClusterIP`, `LoadBalancer`
 
 ## Deployment
 
