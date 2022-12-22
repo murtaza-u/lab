@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmdline
+  namespace: default
+  labels:
+    app: cmdline
+spec:
+  selector:
+    matchLabels:
+      app: cmdline
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cmdline
+    spec:
+      containers:
+      - name: cmdline
+        image: busybox:latest
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - echo "Hello $DB_HOST"; sleep infinity
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: myconfig
+              key: foo1
+              optional: false
+      restartPolicy: Always
+---

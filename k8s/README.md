@@ -605,3 +605,13 @@ volumes:
     * Password
     * CLIENT_ID
     * CLIENT_SECRET
+
+## Downward API
+
+<https://kubernetes.io/docs/concepts/workloads/pods/downward-api/>
+
+* Kubernetes agnostic way of passing information to applications.
+* Information is passed via environment variables or mounted volumes and
+  hence the application need not call the API server.
+* Limitations: Containers can only access information of the pod they
+  are running inside.
