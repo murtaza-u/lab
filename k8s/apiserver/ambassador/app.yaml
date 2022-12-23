@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ambassador
+  namespace: default
+  labels:
+    app: ambassador
+spec:
+  selector:
+    matchLabels:
+      app: ambassador
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ambassador
+    spec:
+      containers:
+      - name: curl
+        image: nicolaka/netshoot:latest
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - sleep infinity
+      - name: ambassador
+        image: luksa/kubectl-proxy:latest
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+---

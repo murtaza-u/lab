@@ -1,5 +1,9 @@
 # Kubernetes
 
+[Kubernetes in action](https://www.manning.com/books/kubernetes-in-action)
+is what I'm referring for learning most of Kubernetes. Thank you Marko
+Luksa for giving us this wonderful book.
+
 ## What makes containerisation possible?
 
 * Linux namespaces
@@ -615,3 +619,24 @@ volumes:
   hence the application need not call the API server.
 * Limitations: Containers can only access information of the pod they
   are running inside.
+
+## Deployment Strategy
+
+* Deployment strategy describes how to replace existing pods with new
+  ones.
+* There are 2 types of strategies available:
+
+  1. **RollingUpdate** (default): Replaces existing pods with new ones
+     by gradually scaling down the old replicaset and scaling up the new
+     replicaset.
+  2. **Recreate**: kills all existing pods before creating new ones.
+     Will lead to some downtime. Must be used when two different version
+     of an application can **not** co-exists together.
+
+* `kubectl explain deployment.spec.strategy.rollingUpdate`
+* `kubectl rollout status deployment mydepl`
+* `kubectl rollout pause deployment mydepl`
+* `kubectl rollout resume deployment mydepl`
+* `kubectl rollout restart deployment mydepl`
+* `kubectl rollout undo deployment mydepl [--to-revision n]`
+* `kubectl rollout history deployment mydepl`
