@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: datastore
+  namespace: default
+spec:
+  selector:
+    app: datastore
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http
+    port: 8080
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: datastore
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: datastore
+  serviceName: datastore
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: datastore
+    spec:
+      containers:
+      - name: datastore
+        image: datastore:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DATAFILE
+          value: /datastore/data/node.data
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /datastore/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Mi
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: datastore-public
+  namespace: default
+spec:
+  selector:
+    app: datastore
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    nodePort: 30001
+---

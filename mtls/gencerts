@@ -1,0 +1,57 @@
+#!/bin/sh
+
+### change these
+APISRV_STATION_ADDR="api.murtazau.xyz"
+IP="127.0.0.1"
+EXPIRY=1000
+
+# optional
+COUNTRY="US"
+STATE="Texas"
+CITY="Missouri City"
+EMAIL="noreply@example.com"
+
+ca() {
+    openssl req -x509 -newkey rsa:4096 -days $EXPIRY -nodes \
+        -keyout ca-key.pem -out ca-cert.pem \
+        -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=SmartCard/OU=CA/CN=ca.example.com/emailAddress=$EMAIL"
+
+    openssl x509 -in ca-cert.pem -noout -text
+}
+
+apisrv() {
+    openssl req -newkey rsa:4096 -nodes -keyout apisrv-key.pem \
+        -out apisrv-req.pem \
+        -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=SmartCard/OU=apisrv/CN=apisrv.example.com/emailAddress=$EMAIL"
+
+    echo "subjectAltName=DNS:$APISRV_STATION_ADDR,IP:$IP" > apisrv-ext.cnf
+
+    openssl x509 -req -in apisrv-req.pem -days $EXPIRY -CA ca-cert.pem \
+        -CAkey ca-key.pem -CAcreateserial -out apisrv-cert.pem \
+        -extfile apisrv-ext.cnf
+
+    openssl x509 -in apisrv-cert.pem -noout -text
+}
+
+iot() {
+    openssl req -newkey rsa:4096 -nodes -keyout iot-key.pem \
+        -out iot-req.pem \
+        -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=SmartCard/OU=iot/CN=iot.example.com/emailAddress=$EMAIL"
+
+    echo "subjectAltName=DNS:iot.example.com,IP:$IP" > iot-ext.cnf
+
+    openssl x509 -req -in iot-req.pem -days $EXPIRY -CA ca-cert.pem \
+        -CAkey ca-key.pem -CAcreateserial -out iot-cert.pem \
+        -extfile iot-ext.cnf
+
+    openssl x509 -in iot-cert.pem -noout -text
+}
+
+# create `certs` directories
+mkdir certs -p
+cd certs
+
+# generate certs & private keys
+ca
+apisrv
+iot

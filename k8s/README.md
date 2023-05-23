@@ -1,10 +1,10 @@
 # Kubernetes
 
 [Kubernetes in action](https://www.manning.com/books/kubernetes-in-action)
-is what I'm referring for learning most of Kubernetes. Thank you Marko
+is what I'm referring for learning most of Kubernetes. Thank you, Marko
 Luksa for giving us this wonderful book.
 
-## What makes containerisation possible?
+## What makes containerization possible?
 
 * Linux namespaces
 * Linux Control Groups(cgroups)
@@ -21,9 +21,9 @@ Luksa for giving us this wonderful book.
 
 ## Why K8s?
 
-* Trend from monolith to micro services gave rise to increase in usage
-  of containerisation technology.
-* This resulted in application that now comprise of 100s or 1000s of
+* Trend from monolith to microservices gave rise to increase in usage
+  of containerization technology.
+* This resulted in application that now consist of 100s or 1000s of
   running containers.
 * Making managing application through self-made scripts and tools
   difficult.
@@ -55,7 +55,7 @@ Luksa for giving us this wonderful book.
 
 ### Scheduler - decides and ensures pods placement
 
-* Schedules pods
+* Schedule pods
 * Assigns a worker node to each deployable component of your application
 
 ### `etcd` - Kubernetes backing store(key value store)
@@ -318,7 +318,7 @@ readinessProbe:
 * If pods are created manually, they are not managed by the control
   plane components but solely by kubelet.
 * If a node dies, kubelet running on that node dies as well.
-* Hence kubernetes has no way of rescheduling the pod and is lost
+* Hence, kubernetes has no way of rescheduling the pod and is lost
   forever.
 
 ## `matchExpressions` selector
@@ -424,7 +424,7 @@ spec:
 
 * `Local` preserves client's IP by eliminating an unneeded network hop,
   which in turn prevents SNAT. However, this comes at a cost of possible
-  imbalanced traffic distribution. Also the load balancer’s health
+  imbalanced traffic distribution. Also, the load balancer’s health
   checking capabilities needs to be configured to only send traffic to
   nodes where the corresponding `NodePort` is responsive.
 
@@ -630,8 +630,8 @@ volumes:
      by gradually scaling down the old replicaset and scaling up the new
      replicaset.
   2. **Recreate**: kills all existing pods before creating new ones.
-     Will lead to some downtime. Must be used when two different version
-     of an application can **not** co-exists together.
+     Will lead to some downtime. Must be used when two different versions
+     of an application can **not** co-exist together.
 
 * `kubectl explain deployment.spec.strategy.rollingUpdate`
 * `kubectl rollout status deployment mydepl`
