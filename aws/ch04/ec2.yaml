@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Provision an EC2 instance'
+Parameters:
+  VPC:
+    Type: 'AWS::EC2::VPC::Id'
+  Subnet:
+    Type: 'AWS::EC2::Subnet::Id'
+  InstanceType:
+    Description: 'Select one of the possible instance type'
+    Type: String
+    Default: 't2.micro'
+    AllowedValues: ['t2.micro', 't2.small', 't2.medium']
+Resources:
+  SecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: !Ref 'AWS::StackName'
+      VpcId: !Ref VPC
+  VM:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: 'ami-0f5ee92e2d63afc18'
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds: [!Ref SecurityGroup]
+      SubnetId: !Ref Subnet
+Outputs:
+  InstanceId:
+    Description: 'Instance id of the launched VM'
+    Value: !Ref VM

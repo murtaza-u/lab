@@ -1,2 +1,6 @@
 /rsa
 .direnv
+node_modules
+
+# Local Netlify folder
+.netlify
