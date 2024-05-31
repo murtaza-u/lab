@@ -1,0 +1,21 @@
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: installing updates
+      changed_when: false
+      apt:
+        update_cache: true
+        upgrade: full
+
+- hosts: all
+  name: bootstrapping
+  become: true
+  roles:
+    - name: commons
+      role: commons
+
+    - name: installing containerd
+      role: containerd
+
+    - name: installing kubernetes packages
+      role: kubernetes-packages

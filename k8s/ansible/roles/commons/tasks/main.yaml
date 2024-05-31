@@ -1,0 +1,51 @@
+- name: install common packages
+  apt:
+    name:
+      - apt-transport-https
+      - curl
+
+- name: enable port forwarding
+  ansible.posix.sysctl:
+    name: "net.ipv4.ip_forward"
+    value: "1"
+    reload: true
+    sysctl_set: true
+
+- name: persist network configuration across reboots
+  copy:
+    src: network.conf
+    dest: /etc/sysctl.d/k8s.conf
+    mode: 0644
+
+- name: load required kernel modules
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - overlay
+    - br_netfilter
+
+- name: load required kernel modules on reboots
+  copy:
+    src: modules.conf
+    dest: /etc/modules-load.d/k8s.conf
+    mode: 0644
+
+- name: disable bluetooth
+  copy:
+    src: bluetooth
+    dest: /boot/config.txt
+    mode: 0644
+
+- name: checking if dphys-swapfile binary exists
+  stat:
+    path: /usr/sbin/dphys-swapfile
+  register: dphys_swapfile
+
+- name: disable swap
+  shell:
+    cmd: |
+      dphys-swapfile swapoff
+      dphys-swapfile uninstall
+  when: dphys_swapfile.stat.exists
+  notify: purge-dphys-swapfile

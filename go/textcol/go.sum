@@ -1,0 +1,4 @@
+github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d h1:licZJFw2RwpHMqeKTCYkitsPqHNxTmd4SNR5r94FGM8=
+github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d/go.mod h1:asat636LX7Bqt5lYEZ27JNDcqxfjdBQuJ/MM4CN/Lzo=
+github.com/acarl005/textcol v0.0.0 h1:39UH8Ojpl8SMMKho1HgoQ8mQ7no4281u6SN/MyT5EU4=
+github.com/acarl005/textcol v0.0.0/go.mod h1:o8VbpDKrBLFfZtTo/AXk03Zn3dQHYOLJ8v//eaDtl78=

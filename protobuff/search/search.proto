@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package search;
+
+import "google/protobuf/any.proto";
+
+option go_package = "gen/go";
+
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 result_per_page = 3;
+
+  oneof engine_id {
+    string google = 4;
+    string bing = 5;
+    string duck = 6;
+  }
+
+  map<string, int32> visited = 7;
+}
+
+message Result {
+  string title = 1;
+  string url = 2;
+}
+
+message SearchResponse {
+  repeated Result results = 1;
+}
+
+message ErrorStatus {
+  string message = 1;
+  repeated google.protobuf.Any details = 2;
+}
+
+service SearchService {
+  rpc Search(SearchRequest) returns (SearchResponse);
+}

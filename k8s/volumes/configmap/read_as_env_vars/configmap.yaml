@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: myconfig
+  namespace: default
+data:
+  FOO: foo
+  BAR: bar
+  FIRST_VAR: foo
+  SECOND_VAR: bar
+---

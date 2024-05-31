@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option go_package = "proto/gen/go";
+
+message Void {}
+
+service Dummy {
+  rpc UnaryPing(Void) returns (Void);
+  rpc ServerStreamPing(Void) returns (stream Void);
+  rpc ClientStreamPing(stream Void) returns (Void);
+}

@@ -1,0 +1,15 @@
+.:53 {
+    log
+    errors
+    forward . 8.8.8.8 1.1.1.1
+    # hosts /etc/coredns/hosts {
+    #   no reverse
+    #   fallthrough
+    # }
+}
+
+example.com:53 {
+    file example.com.db
+    log
+    errors
+}

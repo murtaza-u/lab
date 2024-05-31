@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+}
+
+#box {
+  width: 200px;
+  height: 200px;
+  border: 2px solid black;
+}
+
+form {
+  margin-top: 1rem;
+  border: 2px solid black;
+}
+
+input {
+  width: 200px;
+  padding: .3rem;
+  font-size: 1.3em;
+  text-align: center;
+}

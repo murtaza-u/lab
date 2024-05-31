@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "github.com/murtaza-u/rtspproxy/proto/gen/go/proxy";
+
+message Packet {
+  bytes Data = 1;
+}
+
+message Void {}
+
+service ProxySvc {
+  rpc Stream(stream Packet) returns (Void);
+}

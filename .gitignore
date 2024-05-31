@@ -1,0 +1,6 @@
+/rsa
+.direnv
+node_modules
+.svelte-kit
+*/.git
+.netlify

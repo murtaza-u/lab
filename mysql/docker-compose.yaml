@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  mysql:
+    restart: always
+    image: mysql:8.3.0
+    ports:
+      - 3306:3306
+    volumes:
+      - ${PWD}/data:/var/lib/mysql
+      - ${PWD}/certs:/etc/mysql/certs
+      - ${PWD}/conf.d:/etc/mysql/conf.d
+      - ${PWD}/init.d:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor

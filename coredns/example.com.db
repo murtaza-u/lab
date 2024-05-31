@@ -1,0 +1,9 @@
+example.com.        IN SOA  dns.example.com. murtaza.murtazau.xyz. 2015082541 7200 3600 1209600 3600
+
+; resolves to itself
+dns.example.com.    IN A    192.168.0.100
+
+; nodes
+i51.example.com.     IN A 192.168.0.100
+i52.example.com.     IN A 192.168.0.101
+i53.example.com.     IN A 192.168.0.102

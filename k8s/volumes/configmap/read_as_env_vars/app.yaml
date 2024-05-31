@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readasenv
+  namespace: default
+  labels:
+    app: readasenv
+spec:
+  selector:
+    matchLabels:
+      app: readasenv
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: readasenv
+    spec:
+      containers:
+      - name: readasenv
+        image: printenv:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          # prefix: CONFIG_
+          - configMapRef:
+              name: myconfig
+              optional: false
+        # env:
+        # - name: FIRST_VAR
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: myconfig
+        #       key: FOO
+        #       optional: true
+        # - name: SECOND_VAR
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: myconfig
+        #       key: BAR
+      restartPolicy: Always
+---

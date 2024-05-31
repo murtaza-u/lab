@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svcvis
+  namespace: default
+  labels:
+    app: svcvis
+spec:
+  selector:
+    matchLabels:
+      app: svcvis
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: svcvis
+    spec:
+      containers:
+      - name: svcvis
+        image: svcvis:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+          name: svcvis
+      restartPolicy: Always
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svcvis-service
+  namespace: default
+spec:
+  selector:
+    app: svcvis
+  type: NodePort
+  ports:
+  - name: svcvis-service
+    protocol: TCP
+    port: 80
+    targetPort: 8000
+    nodePort: 30001
+---

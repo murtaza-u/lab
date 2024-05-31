@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lb
+  namespace: default
+  labels:
+    app: lb
+spec:
+  selector:
+    matchLabels:
+      app: lb
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: lb
+    spec:
+      containers:
+      - name: lb
+        image: nginx:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: http
+      restartPolicy: Always
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb
+  namespace: default
+spec:
+  selector:
+    app: lb
+  type: LoadBalancer
+  ports:
+  - name: lb
+    protocol: TCP
+    port: 80
+    targetPort: http
+    nodePort: 30001
+---

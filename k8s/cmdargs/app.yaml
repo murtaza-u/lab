@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmdargs
+  namespace: default
+  labels:
+    app: cmdargs
+spec:
+  selector:
+    matchLabels:
+      app: cmdargs
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cmdargs
+    spec:
+      containers:
+      - name: cmdargs
+        image: fortuneloop:args
+        imagePullPolicy: IfNotPresent
+        command: ["/usr/bin/fortuneloop"] # overwrited ENTRYPOINT
+        args: ["2"]                       # overwrited CMD
+      restartPolicy: Always
+---

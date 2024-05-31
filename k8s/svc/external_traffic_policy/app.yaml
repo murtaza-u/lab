@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: snat
+  namespace: default
+spec:
+  externalTrafficPolicy: Local # or `Cluster` (default)
+  selector:
+    app: snat
+  type: NodePort # only `NodePort` and `LoadBalancer` allowed
+  ports:
+  - name: snat
+    protocol: TCP
+    port: 80
+    targetPort: 8000
+    nodePort: 30002
+---

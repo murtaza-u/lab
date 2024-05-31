@@ -1,0 +1,36 @@
+schema = 3
+
+[mod]
+  [mod."github.com/rwxrob/bonzai"]
+    version = "v0.20.10"
+    hash = "sha256-xs+9hyO63BW/L8vrxvvSehi0YxiXGIvQiasfaR03+3c="
+  [mod."github.com/rwxrob/compcmd"]
+    version = "v0.3.0"
+    hash = "sha256-8dCzRmdOMQGNYoIcygeBGLJrWc/eT+gkcJgHRyZ8b5U="
+  [mod."github.com/rwxrob/fn"]
+    version = "v0.4.0"
+    hash = "sha256-BHMj3+gn8Sd0GJVjI8E09WyW6KryDg4U+wF3kp4kXwo="
+  [mod."github.com/rwxrob/help"]
+    version = "v0.7.2"
+    hash = "sha256-kmPcHXtVAADsQ77JNiZgMzp306lFKAjmV5CzEJvTrSo="
+  [mod."github.com/rwxrob/pegn"]
+    version = "v0.2.1"
+    hash = "sha256-Nlx9lo21oyDP2rb4gb1YR3AzWM9b4lMajdGMMLexffI="
+  [mod."github.com/rwxrob/structs"]
+    version = "v0.6.0"
+    hash = "sha256-3y5uC3btg6uaPj7XBnNSdRjikoGD0VL8SGViwsZxdWA="
+  [mod."github.com/rwxrob/term"]
+    version = "v0.2.9"
+    hash = "sha256-qJzSorD0IaeB4qJNo54Vp8AUP66t1x3t+HNU68Ob6GU="
+  [mod."github.com/rwxrob/to"]
+    version = "v0.12.1"
+    hash = "sha256-zZExQ8+NTmACFYx439jAlzqsASEw1jwvsXsq4+FzIqs="
+  [mod."golang.org/x/crypto"]
+    version = "v0.8.0"
+    hash = "sha256-gZ225jF4mxRLlba6OzdTvrsP6kLYf/xOjWMFavCF6tY="
+  [mod."golang.org/x/sys"]
+    version = "v0.8.0"
+    hash = "sha256-wLPPnoFkHM1HPUaFIfRyQZOJjrqXVZimB0nMySly7Xg="
+  [mod."golang.org/x/term"]
+    version = "v0.8.0"
+    hash = "sha256-Dr+sLVwiZZRFCaZ1JsHdQSL1PrpeRGF1zilibyw1XrA="

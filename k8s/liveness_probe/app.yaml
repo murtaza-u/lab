@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness
+  namespace: default
+  labels:
+    app: liveness
+spec:
+  containers:
+  - name: liveness
+    image: liveness:latest
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 8000
+      initialDelaySeconds: 5 # default 0s (inital delay before probing starts)
+      timeoutSeconds: 5      # default 1s (if the response time exceeds 5, kill)
+      periodSeconds: 10      # default 10s (time period between each probe)
+      failureThreshold: 3    # default 3 (no. of failures before killing)
+      successThreshold: 1    # default 1
+    ports:
+    - containerPort: 8000
+      name: liveness
+  restartPolicy: Always
+---

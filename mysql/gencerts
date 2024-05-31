@@ -1,0 +1,84 @@
+#!/bin/sh
+
+DOMAIN_NAME="mysql.murtazau.xyz"
+IP="35.154.95.212"
+
+CA_EXPIRY=365
+EXPIRY=90
+
+ORG="Murtaza Udaipurwala"
+CA_CN="Murtaza Udaipurwala"
+SERVER_CN="mysql.murtazau.xyz"
+CLIENT_CN="assemble.murtazau.xyz"
+EMAIL="murtaza@murtazau.xyz"
+
+ca() {
+    openssl req \
+        -x509 \
+        -newkey rsa:4096 \
+        -days $CA_EXPIRY \
+        -nodes \
+        -keyout ca-key.pem \
+        -out ca-cert.pem \
+        -subj "/O=$ORG/CN=$CA_CN/emailAddress=$EMAIL"
+}
+
+server() {
+    openssl req \
+        -newkey rsa:4096 \
+        -nodes \
+        -keyout server-key.pem \
+        -out server-req.pem \
+        -subj "/O=$ORG/CN=$SERVER_CN/emailAddress=$EMAIL"
+
+    echo "subjectAltName=DNS:$DOMAIN_NAME,IP:$IP" > server-ext.cnf
+
+    openssl x509 \
+        -req -in server-req.pem \
+        -days $EXPIRY \
+        -CA ca-cert.pem \
+        -CAkey ca-key.pem \
+        -out server-cert.pem \
+        -extfile server-ext.cnf
+}
+
+client() {
+    openssl req \
+        -newkey rsa:4096 \
+        -nodes \
+        -keyout client-key.pem \
+        -out client-req.pem \
+        -subj "/O=$ORG/CN=$CLIENT_CN/emailAddress=$EMAIL"
+
+    echo "subjectAltName=DNS:$DOMAIN_NAME,IP:$IP" > client-ext.cnf
+
+    openssl x509 \
+        -req -in client-req.pem \
+        -days $EXPIRY \
+        -CA ca-cert.pem \
+        -CAkey ca-key.pem \
+        -out client-cert.pem \
+        -extfile client-ext.cnf
+}
+
+
+# init `certs` directories
+sudo rm -rf certs
+mkdir certs -p
+# chmod 700 certs
+
+pushd certs
+
+# generate certs & private keys
+ca
+server
+client
+
+# clean up
+rm *req.pem *ext.cnf
+chmod 644 *cert.pem
+chmod 600 *key.pem
+
+popd
+
+# sudo chown 999:999 certs/*

@@ -1,0 +1,49 @@
+# kubectl create configmap myconfig \
+#   --from-file mynginx.conf \
+#   --from-literal FIRST_VAR=foo
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mount
+  namespace: default
+  labels:
+    app: mount
+spec:
+  selector:
+    matchLabels:
+      app: mount
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mount
+    spec:
+      containers:
+      - name: mount
+        image: nginx:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: config
+          ## mounting entire directory
+          # mountPath: /etc/nginx/conf.d
+          ##
+
+          ## mounting a single file
+          mountPath: /etc/nginx/conf.d/gzip.conf
+          subPath: mycustomnginx.conf
+          ##
+      volumes:
+        - name: config
+          configMap:
+            name: myconfig
+            # if items are not specified, all keys inside the configMap become
+            # a part of volume
+            items:
+              - key: mynginx.conf
+                path: mycustomnginx.conf
+      restartPolicy: Always
+---
